@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>용현산업단지 복합문화센터 — 에너지·설비 계통도</title>
+<style>
+  :root{--elec:#ca8a04;--gas:#ea580c;--hot:#dc2626;--ref:#7c3aed;--water:#0284c7;--rain:#0d9488}
+  *{box-sizing:border-box}
+  body{font-family:'Pretendard','Malgun Gothic','Apple SD Gothic Neo',sans-serif;background:#f4f7f9;margin:0;padding:18px;color:#0f172a;display:flex;flex-direction:column;align-items:center}
+  h2{margin:0 0 4px;font-size:20px;color:#1e293b}
+  .sub{font-size:13px;color:#64748b;margin-bottom:12px;text-align:center;line-height:1.6}
+  .bar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;background:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 2px 4px rgba(0,0,0,.05);margin-bottom:10px;max-width:1060px;width:100%}
+  .grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .gl{font-size:12px;color:#64748b;font-weight:bold;margin-right:2px}
+  .chip{border:1.5px solid #cbd5e1;background:#fff;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:inherit;color:#0f172a}
+  .chip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .chip:hover{background:#f1f5f9}
+  .chip.on{background:#0f172a;color:#fff;border-color:#0f172a}
+  .chip.reset{border-style:dashed}
+  .wrap{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:10px;overflow-x:auto;max-width:100%}
+  svg{display:block}
+  #root{animation:fade .25s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .band{fill:#fff;stroke:#cbd5e1;stroke-width:1}
+  .band.alt{fill:#f8fafc}.band.base{fill:#f1f5f9}.band.skip{fill:#fafafa}
+  .fl{font-size:13px;font-weight:bold;fill:#475569}
+  .skl{font-size:11px;fill:#94a3b8}
+  .room{fill:#fff;stroke:#cbd5e1;stroke-width:1.2}
+  .rt{font-size:11.5px;fill:#64748b;text-anchor:middle}
+  .room.on{stroke-width:2.2}
+  .rt.on{fill:#0f172a;font-weight:bold}
+  .outline{fill:none;stroke:#334155;stroke-width:2.5}
+  .node rect.b,.node circle.b{fill:#f8fafc;stroke:#334155;stroke-width:2}
+  .node .t{font-size:13px;font-weight:bold;fill:#0f172a;text-anchor:middle}
+  .node .s{font-size:10.5px;fill:#64748b;text-anchor:middle}
+  .node.src rect.b{fill:#fffbeb}
+  .node.asm rect.b{stroke-dasharray:5 3}
+  .node[data-k]{cursor:pointer}
+  .node[data-k]:hover rect.b,.node[data-k]:hover circle.b{stroke:#0f172a;stroke-width:3}
+  .tm rect{fill:#fff;stroke-width:1.6}
+  .tm text{font-size:10.5px;font-weight:600;text-anchor:middle;fill:#0f172a}
+  .edge{fill:none;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:9 6;animation:flow 1s linear infinite}
+  .pedge{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5;animation:flow2 1s linear infinite}
+  .edge.alt{stroke-dasharray:3 5;animation-name:flow3}
+  .pedge.alt{stroke-dasharray:2.5 4;animation-name:flow4}
+  @keyframes flow{to{stroke-dashoffset:-15}}
+  @keyframes flow3{to{stroke-dashoffset:-16}}
+  @keyframes flow4{to{stroke-dashoffset:-13}}
+  @keyframes flow2{to{stroke-dashoffset:-12}}
+  .rl{font-size:10px;font-weight:bold}
+  .panel{max-width:1060px;width:100%;margin-top:10px;background:#fff;border-radius:10px;box-shadow:0 2px 4px rgba(0,0,0,.05);padding:12px 16px;font-size:14px;line-height:1.75;min-height:48px}
+  .panel b{display:inline-block;min-width:92px}
+  .panel .sp{color:#475569;font-size:13px;border-top:1px solid #e2e8f0;margin-top:6px;padding-top:6px}
+  .panel .as{color:#b45309;font-size:12.5px}
+  .hint{color:#64748b}
+  .band[data-f]{cursor:pointer}.band[data-f]:hover{fill:#eef2ff}
+  .band.cur{stroke:#2563eb;stroke-width:2.5}
+  .room,.rt,.fl,.skl,.edge,.pedge,.rl,.prt,.pnote{pointer-events:none}
+  .pcard{max-width:1060px;width:100%;margin-top:12px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:12px}
+  .phead{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:6px}
+  .phead h3{margin:0;font-size:16px;color:#1e293b}
+  .ptabs{display:flex;gap:4px}
+  .ptab{border:1.5px solid #cbd5e1;background:#fff;border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit}
+  .ptab.on{background:#2563eb;border-color:#2563eb;color:#fff}
+  .ptab:disabled{opacity:.35;cursor:default}
+  .pdesc{font-size:12px;color:#64748b}
+  .proom{fill:#fff;stroke:#94a3b8;stroke-width:1.3}
+  .proom.core{fill:#f1f5f9}
+  .proom.soft{fill:#f8fafc;stroke:#cbd5e1;stroke-dasharray:4 3}
+  .prt{font-size:11px;fill:#64748b;font-weight:bold;paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round}
+  .prt.on{fill:#0f172a}
+  .pnote{font-size:10.5px;fill:#64748b}
+  .pin{font-size:11px;font-weight:bold;fill:#334155;paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round}
+  .poutline{fill:none;stroke:#334155;stroke-width:2.6}
+  .pq rect,.pq circle{stroke-width:2}
+  .pq text{font-size:10.5px;font-weight:bold;text-anchor:middle;fill:#0f172a}
+  @media (prefers-reduced-motion:reduce){.edge,.pedge{animation:none}}
+</style>
+</head>
+<body>
+<h2>용현산업단지 복합문화센터 — 에너지·설비 계통도</h2>
+
+<div class="bar">
+  <div class="grp"><span class="gl">에너지원</span>
+    <button class="chip" data-k="elec"><i style="background:var(--elec)"></i>전력</button>
+    <button class="chip" data-k="gas"><i style="background:var(--gas)"></i>도시가스</button>
+    <button class="chip" data-k="water"><i style="background:var(--water)"></i>상수도</button>
+  </div>
+  <div class="grp"><span class="gl">설비 계통</span>
+    <button class="chip" data-k="ehp"><i style="background:var(--ref)"></i>전기히트펌프</button>
+    <button class="chip" data-k="ghp"><i style="background:var(--ref)"></i>가스히트펌프</button>
+    <button class="chip" data-k="fc"><i style="background:var(--gas)"></i>연료전지</button>
+    <button class="chip" data-k="hw"><i style="background:var(--hot)"></i>급탕</button>
+    <button class="chip" data-k="rain"><i style="background:var(--rain)"></i>빗물</button>
+  </div>
+  <button class="chip reset" id="reset">건물 개요</button>
+</div>
+
+<div class="wrap"><svg id="g" width="1040" viewBox="0 0 1040 700" role="img" aria-label="단면 계통도"><defs id="defs"></defs><g id="root"></g></svg></div>
+<div class="pcard">
+  <div class="phead"><h3 id="ptitle">평면 계통도</h3><div class="ptabs" id="ptabs"></div></div>
+  <svg id="pg" width="1040" height="610" viewBox="0 0 1040 610" role="img" aria-label="평면 계통도"><g id="proot"></g></svg>
+</div>
+<div class="panel" id="panel"></div>
+
+<script>
+(function(){
+/* =====================================================================
+   건물 설정 — 구성을 바꿀 때는 이 블록만 고치면 돼요.
+   출처: 건축 A-111~A-114(2023 변경후 평면), 기계 M-003·M-101·M-103·M-401(2023 증축),
+        M-003·M-004·M-006·M-009·M-016·M-017·M-019(2019 기업지원센터), 전기 EE-003·EE-101
+   ===================================================================== */
+var COL={elec:'#ca8a04',gas:'#ea580c',hot:'#dc2626',ref:'#7c3aed',water:'#0284c7',rain:'#0d9488'};
+
+/* 계통 설명 (하단 패널) — [이름, 흐름, 가정 메모] */
+var DESC={
+  elec:['전력','한전 저압 인입(동측 전주→전력맨홀) → B1 EPS 주배전반 LN-M → EPS 입상 → 1F 기존 분전반 · 2F LN-2/2L/CC/CS → RF 실외기 동력반(OAC-PH) · 승강기 / 연료전지(6kW)·태양광(67.1kW, 인버터 41kW+31kW) 발전분은 LN-M에 연계','1F 분전반 위치는 가정'],
+  gas:['도시가스','서측 인입 → 계량기 G10(연료전지) · G16(GHP) → 연료전지실 FC ×3 / 외벽 가스 입상 → 1F 외부 GHP 실외기 OAC-1·2 · RF OGHP-1','가스 입상관 위치(외벽 서측)는 가정'],
+  water:['상수도','토목 급수관(주차장 측) → Ø50 급수계량기 → PS 급수 입상 → 1F 화장실·샤워실·물탱크실 · 2F 화장실·공용주방 / 연료전지 저탕조 급수',''],
+  ehp:['전기히트펌프','LN-M → EPS → RF 동력반 → ① OEHP-1(57kW) → 냉매 입상 → 2F 다목적·동아리·원데이·용역원실 실내기 7대 ② OEHP-2(69.6kW) → 냉매 입상 → 2F 사무·창업기업입주·체력단련실 실내기 6대','냉매 입상 위치(EV홀 옆)는 가정'],
+  ghp:['가스히트펌프','도시가스 → ① 1F 외부 OAC-1(71kW) → 남측 실내기 7대(기업인휴게·회의·교육·사무·관리실) ② OAC-2(85kW) → 북측 실내기 12대(입주·강의·컴퓨터·성공·희망·휴게·행정·ATM) ③ RF OGHP-1(101kW) → 냉매 입상 → 2F 실내기 11대(청년창업지원센터 10 · 공용주방 1)','OAC-1·2 담당 실 구분은 M-006의 배관 2계통을 실내기 용량 합(72.6kW≒71kW, 85.4kW≒85kW)으로 맞춘 가정'],
+  fc:['연료전지','도시가스(G10) → 연료전지 6kW (신규) → 전력: LN-M 계통연계 · 열: 저탕조 1,000L → 급탕','신규 저탕조 설치 위치는 가정'],
+  hw:['급탕','연료전지 회수열 → 저탕조 → 급탕 입상(가정) → 1F 샤워실 · 1F 물탱크실 전기온수기 EH-2(800L) / 화장실은 개별 전기온수기(1F EH-1 ×4, 2F ET-1 ×5)','저탕조→1F 샤워실 연결은 가정'],
+  rain:['빗물','지붕 루프드레인 → 선홈통 → 토목 우수관 → B1 우수 저수조 → 여과·살균(Smarteco) → 공급펌프 ×2(1대 예비) → 조경용수 · 청소용 밸브함','루프드레인 4개·저수조 유입 경로는 가정 / 저수조 용량 100t(M-009)과 129㎥(M-017) 상충']
+};
+
+/* 단면: 사용층 (위→아래). zones=[구역명, 관련계통], terms=계통별 [단말 표기, 공급원(입상관 key 또는 'oac')] */
+var FLOORS=[
+  {k:'2F', zones:[['청년창업지원센터','ghp elec'],['공용주방','ghp water elec'],['다목적·동아리실','ehp1 elec'],['체력단련·사무실','ehp2 elec'],['화장실','hw water elec']],
+   terms:{ehp1:['OEHP-1 실내기 × 7','ref_e1'],ehp2:['OEHP-2 실내기 × 6','ref_e2'],ghp:['OGHP-1 실내기 × 11','ref_g'],hw:['전기온수기 ET-1 × 5','elec'],water:['급수 (화장실·주방)','water'],elec:['분전반 LN-2 외 3면','elec']}},
+  {k:'1F', host:['oac1','oac2'], zones:[['북측 입주·강의실 외','ghp2 elec'],['남측 교육·회의실 외','ghp1 elec'],['화장실','hw water elec'],['샤워실','hw water elec'],['물탱크실','hw water elec']],
+   terms:{ghp1:['OAC-1 실내기 × 7','oac1'],ghp2:['OAC-2 실내기 × 12','oac2'],hw:['급탕 (샤워실·화장실)','hw'],water:['급수 (화장실·샤워실)','water'],elec:['분전반 (기존 존치)','elec']}}
+];
+/* 실외기별 계통: sel=상단 버튼, alt=1 → 점선(···)·연보라 실내기로 구분 */
+var UNIT={ehp1:{sel:'ehp',n:'OEHP-1',alt:0,fill:'#fff'},ehp2:{sel:'ehp',n:'OEHP-2',alt:1,fill:'#ddd6fe'},ghp:{sel:'ghp',n:'OGHP-1',alt:0,fill:'#c4b5fd'},
+          ghp1:{sel:'ghp',n:'OAC-1',alt:0,fill:'#fff'},ghp2:{sel:'ghp',n:'OAC-2',alt:1,fill:'#ddd6fe'}};
+function SK(k){return UNIT[k]?UNIT[k].sel:k}
+function isHV(k){return !!UNIT[k]}
+var TERM_ORDER=['ehp1','ehp2','ghp','ghp1','ghp2','hw','water','elec'];
+var TERM_COL={ehp1:'ref',ehp2:'ref',ghp:'ref',ghp1:'ref',ghp2:'ref',hw:'hot',water:'water',elec:'elec'};
+
+/* 입상관: 이름, 색, 활성 계통, 흐름 방향(up=B1→위, down=위→B1), 걸치는 층 */
+var SHAFT={
+  ref_e1:['냉매 OEHP-1','ref',['ehp'],'down',['RF','2F']],
+  ref_e2:['냉매 OEHP-2','ref',['ehp'],'down',['RF','2F'],1],
+  ref_g:['냉매 OGHP-1','ref',['ghp'],'down',['RF','2F']],
+  gas:['도시가스','gas',['gas','ghp'],'up',['B1','1F','2F','RF']],
+  elec:['전력 (EPS)','elec',['elec','ehp','hw'],'up',['B1','1F','2F','RF']],
+  pv:['태양광 발전','elec',['elec'],'down',['RF','2F','1F','B1']],
+  water:['급수','water',['water'],'up',['B1','1F','2F']],
+  hw:['급탕 (가정)','hot',['hw'],'up',['B1','1F']],
+  drain:['우수 강하','rain',['rain'],'down',['RF','2F','1F','B1']]
+};
+var SHAFT_ORDER=['ref_e1','ref_e2','ref_g','gas','elec','pv','water','hw','drain'];
+
+/* 단면 장비 노드: k=클릭 시 선택 계통, sys=보이는 계통, lv=층, 좌표는 층 띠 기준 상대값 */
+var NODES=[
+  {id:'roof',k:'rain',sys:['rain'],lv:'RF',x:190,y:44,w:120,h:46,t:'지붕 집수',s:'루프드레인 (가정 4개)',cls:'src'},
+  {id:'pv',k:'elec',sys:['elec'],lv:'RF',x:330,y:44,w:120,h:46,t:'태양광 67.1kW',s:'550W × 122매 · INV 2대'},
+  {id:'oehp1',k:'ehp',sys:['ehp','elec'],lv:'RF',x:470,y:24,w:120,h:38,t:'EHP 실외기',s:'OEHP-1 · 57kW'},
+  {id:'oehp2',k:'ehp',sys:['ehp','elec'],lv:'RF',x:600,y:24,w:120,h:38,t:'EHP 실외기',s:'OEHP-2 · 69.6kW'},
+  {id:'ocph',k:'elec',sys:['elec','ehp'],lv:'RF',x:470,y:76,w:120,h:38,t:'실외기 동력반',s:'OAC-PH'},
+  {id:'oghp',k:'ghp',sys:['ghp','gas','elec'],lv:'RF',x:600,y:76,w:120,h:38,t:'GHP 실외기',s:'OGHP-1 · 101kW'},
+  {id:'oac1',k:'ghp',sys:['ghp','gas'],lv:'1F',x:15,y:26,w:66,h:46,t:'OAC-1',s:'GHP 71kW'},
+  {id:'oac2',k:'ghp',sys:['ghp','gas'],lv:'1F',x:89,y:26,w:66,h:46,t:'OAC-2',s:'GHP 85kW'},
+  {id:'gsrc',k:'gas',sys:['gas','ghp','fc','hw'],lv:'B1',x:15,y:60,w:140,h:90,t:'도시가스',s:'서측 · G10/G16 계량',cls:'src'},
+  {id:'fc',k:'fc',sys:['fc','gas','elec','hw'],lv:'B1',x:190,y:40,w:150,h:50,t:'연료전지',s:'6kW (신규)'},
+  {id:'tank',k:'hw',sys:['fc','hw','water'],lv:'B1',x:190,y:130,w:150,h:50,t:'연료전지 저탕조',s:'1,000L'},
+  {id:'lnm',k:'elec',sys:['elec','ehp','fc','hw','rain'],lv:'B1',x:380,y:40,w:150,h:50,t:'주배전반 LN-M',s:'B1 EPS · 3φ4W 380V'},
+  {id:'mload',k:'elec',sys:['elec'],lv:'B1',x:380,y:104,w:150,h:30,t:'기계실 동력반',s:''},
+  {id:'rtank',k:'rain',sys:['rain'],lv:'B1',x:380,y:186,w:120,h:46,t:'우수 저수조',s:'100t / 129㎥'},
+  {id:'treat',k:'rain',sys:['rain'],lv:'B1',x:516,y:186,w:96,h:46,t:'여과·살균',s:'Smarteco'},
+  {id:'clean',k:'rain',sys:['rain'],lv:'B1',x:595,y:248,w:110,h:30,t:'청소용 밸브함',s:''},
+  {id:'kepco',k:'elec',sys:['elec','ehp','hw','rain'],lv:'B1',x:893,y:40,w:135,h:50,t:'한전',s:'동측 저압 전주',cls:'src'},
+  {id:'wsrc',k:'water',sys:['water','hw'],lv:'B1',x:893,y:118,w:135,h:46,t:'상수도',s:'Ø50 급수계량기',cls:'src'},
+  {id:'land',k:'rain',sys:['rain'],lv:'B1',x:893,y:190,w:135,h:44,t:'조경용수',s:'외부 (빗물 재이용)'}
+];
+var PUMP={x:650,y:209,r:14,sys:['rain']};
+
+/* ===== 평면 설정 (단위 m. X1·Y6 교점이 원점, 오른쪽=X6(동측 20M도로), 아래=Y1) =====
+   rooms: n=실명, r=[x,y,w,h] 또는 poly, t=단말 {ehp|ghp:대수, water:1, hw:1, hwl:1(개별 전기온수기)},
+          l=분기 통로(N·S·H) 또는 'D'(PS에서 직결), 계통별로 다르면 {ghp:'N',water:'D'}, core/soft=코어·외부, lo=라벨 바깥
+   risers: 계통별 입상관 위치, lanes: 통로 y좌표, equip: 장비, edges: 장비 사이 흐름 */
+var PLANS={
+  RF:{title:'RF 옥상 (지붕층)', out:[-0.7,-0.9,41.9,38.2],
+    rooms:[
+      {n:'옥상정원',r:[2.5,1.2,36.5,10.6],soft:1},
+      {n:'방풍실',r:[15.2,12.4,3.1,2.8]},
+      {n:'계단실',r:[8.2,15.2,7.3,3.7],core:1},
+      {n:'EV홀',r:[15.5,15.2,3.6,3.7],core:1},
+      {n:'EV',r:[19.1,15.2,2.8,3.7],core:1}
+    ],
+    risers:{ref_e1:[14.9,21.8],ref_e2:[15.45,21.8],ref_g:[16.0,21.8],elec:[22.6,17.0],pv:[23.3,17.0],gas:[-1.8,16.6]},
+    equip:[
+      {k:'ghp',sys:['ghp','gas','elec'],r:[5.6,20.6,3.6,2.4],t:'OGHP-1'},
+      {k:'ehp',sys:['ehp','elec'],r:[9.6,20.6,2.2,2.4],t:'EHP-2'},
+      {k:'ehp',sys:['ehp','elec'],r:[12.2,20.6,2.2,2.4],t:'EHP-1'},
+      {k:'elec',sys:['elec','ehp'],r:[16.8,20.6,2.0,2.4],t:'PH'},
+      {k:'elec',sys:['elec'],r:[10.0,26.4,4.4,3.0],t:'INV 41+31kW'},
+      {k:'elec',sys:['elec'],r:[0.0,25.4,9.1,11.0],t:'ARRAY#1 38.5kW (70매)'},
+      {k:'elec',sys:['elec'],r:[15.2,25.4,8.2,11.0],t:'ARRAY#2 28.6kW (52매)'}
+    ],
+    drains:[[8.8,6.7,'N'],[24.1,5.9,'N'],[32.4,4.6,'N'],[34.4,23.9,'E']],
+    edges:[
+      {s:['ehp'],c:'ref',p:[[13.3,23.0],[13.3,23.4],[14.9,23.4],[14.9,22.25]]},
+      {s:['ehp'],c:'ref',p:[[10.7,23.0],[10.7,23.9],[15.45,23.9],[15.45,22.25]],alt:1},
+      {s:['ghp'],c:'ref',p:[[7.4,23.0],[7.4,24.5],[16.0,24.5],[16.0,22.25]]},
+      {s:['gas','ghp'],c:'gas',p:[[-1.8,16.95],[-1.8,21.8],[5.5,21.8]]},
+      {s:['elec','ehp'],c:'elec',p:[[22.6,17.4],[22.6,21.8],[18.9,21.8]]},
+      {s:['elec','ehp'],c:'elec',p:[[17.8,20.6],[17.8,19.75],[10.7,19.75]],n:1},
+      {s:['elec','ehp'],c:'elec',p:[[10.7,19.75],[10.7,20.5]]},
+      {s:['elec','ehp'],c:'elec',p:[[13.3,19.75],[13.3,20.5]]},
+      {s:['elec'],c:'elec',p:[[10.7,19.75],[7.4,19.75],[7.4,20.5]]},
+      {s:['elec'],c:'elec',p:[[9.1,27.9],[9.95,27.9]]},
+      {s:['elec'],c:'elec',p:[[15.2,27.9],[14.45,27.9]]},
+      {s:['elec'],c:'elec',p:[[12.2,26.4],[12.2,25.0],[24.3,25.0],[24.3,17.0],[23.7,17.0]]}
+    ],
+    notes:[[-0.7,-1.5,'루프드레인 → 선홈통 → 토목 우수관 → B1 우수 저수조 (연결 경로·개수 가정)','rain']]
+  },
+  '2F':{title:'2F (증축)', out:[-0.7,-0.9,41.9,38.2], lanes:{N:7.2,H:20.3},
+    rooms:[
+      {n:'청년창업지원센터',poly:[[0,0],[13.1,0],[13.1,8.3],[8.2,8.3],[8.2,18.5],[15.4,18.5],[15.4,37.3],[0,37.3]],anc:{ghp:[4.1,24.5],elec:[12.4,1.4]},t:{ghp:10},l:{ghp:'H',elec:'N'}},
+      {n:'사무실',r:[13.1,0,5.4,6.1],t:{ehp2:1},l:'N'},
+      {n:'창업기업입주실',r:[18.5,0,9.1,6.1],t:{ehp2:1},l:'N'},
+      {n:'체력단련실(헬스)',r:[27.6,0,13.6,8.5],t:{ehp2:2},l:'N'},
+      {n:'체력단련실(탁구)',r:[27.6,8.5,13.6,7.1],t:{ehp2:2},l:'N'},
+      {n:'다목적실(동아리)',r:[27.6,15.6,13.6,6.1],t:{ehp1:2},l:'H'},
+      {n:'다목적실(원데이)',r:[27.6,21.7,13.6,7.0],t:{ehp1:2},l:'H'},
+      {n:'다목적실',r:[15.4,23.8,8.4,13.5],t:{ehp1:2},l:'H'},
+      {n:'방풍실-4',r:[23.8,22.5,3.8,6.2],e:0},
+      {n:'창고',r:[21.9,8.5,5.7,4.8]},
+      {n:'용역원실',r:[23.4,15.6,4.2,2.7],t:{ehp1:1},l:'H'},
+      {n:'공용주방',r:[8.2,8.3,3.3,6.9],t:{ghp:1,water:1},l:{ghp:'N',water:'D',elec:'N'}},
+      {n:'화장실(남)',r:[11.5,8.3,4.0,6.8],t:{water:1,hwl:1},l:'D'},
+      {n:'화장실(여)',r:[17.7,8.3,4.0,6.8],t:{water:1,hwl:1},l:'D'},
+      {n:'계단실',r:[8.2,15.2,7.3,3.3],core:1},
+      {n:'EV홀',r:[15.5,15.6,3.6,2.9],core:1},
+      {n:'EV',r:[19.1,15.6,2.6,2.9],core:1},
+      {n:'EPS',r:[21.7,15.6,1.7,2.9],core:1,lo:1},
+      {n:'외부 계단·테라스',r:[27.6,28.7,13.6,8.6],soft:1}
+    ],
+    risers:{water:[12.0,14.0],ref_e1:[17.4,17.7],ref_e2:[17.95,17.7],ref_g:[18.5,17.7],elec:[22.4,16.6],pv:[23.0,16.6],gas:[-1.8,16.6]},
+    psLabel:[12.45,14.35], equip:[], edges:[]
+  },
+  '1F':{title:'1F (기업지원센터)', out:[0,0,40.5,36.6], lanes:{N:7.2,S:20.8},
+    rooms:[
+      {n:'입주공간-1',r:[0,0,6.0,6.1],t:{ghp2:2},l:'N'},
+      {n:'강의실-1',r:[6.0,0,6.6,6.1],t:{ghp2:1},l:'N'},
+      {n:'컴퓨터실',r:[12.6,0,4.5,6.1],t:{ghp2:1},l:'N'},
+      {n:'강의실-2',r:[17.1,0,6.8,6.1],t:{ghp2:1},l:'N'},
+      {n:'성공실',r:[23.9,0,4.6,6.1],t:{ghp2:1},l:'N'},
+      {n:'입주공간-2',r:[28.5,0,12.0,6.1],t:{ghp2:2},l:'N'},
+      {n:'마루공간',r:[0,8.4,6.0,4.6],l:'N'},
+      {n:'희망실',r:[0,15.3,6.0,3.2],t:{ghp2:1},l:'N'},
+      {n:'휴게실',r:[8.2,8.3,3.3,4.5],t:{ghp2:1},l:'N'},
+      {n:'화장실(남)',r:[11.5,8.3,4.0,6.8],t:{water:1,hwl:1},l:'D'},
+      {n:'화장실(여)',r:[17.7,8.3,4.0,6.8],t:{water:1,hwl:1},l:'D'},
+      {n:'MDF',r:[21.7,8.3,2.6,4.0],l:'N'},
+      {n:'행정/상담실',r:[32.1,8.5,8.4,4.0],t:{ghp2:1},l:'N'},
+      {n:'ATM',r:[32.1,12.5,8.4,2.4],t:{ghp2:1},l:'N'},
+      {n:'계단실',r:[8.2,15.3,4.6,3.0],core:1},
+      {n:'EV홀',r:[12.8,15.3,6.3,3.0],core:1},
+      {n:'EV',r:[19.1,15.3,2.6,3.0],core:1},
+      {n:'EPS',r:[21.7,15.3,1.7,3.0],core:1,lo:1},
+      {n:'방풍실-2',r:[1.0,18.6,5.0,1.8],e:0},
+      {n:'방풍실-1',r:[27.9,17.9,6.0,3.2],e:0},
+      {n:'교육실',r:[0,21.6,8.2,6.6],t:{ghp1:1},l:'S'},
+      {n:'기업인휴게실',r:[0,28.2,8.2,8.4],t:{ghp1:2},l:'S'},
+      {n:'샤워실(남)',r:[10.8,24.3,4.5,3.3],t:{water:1,hw:1},l:'S'},
+      {n:'탈의실',r:[10.8,27.6,4.5,5.4],l:'S'},
+      {n:'물탱크실',r:[8.2,32.6,2.6,4.0],t:{water:1},anc:{water:[9.5,34.36],elec:[10.45,32.95]},nofix:1,l:'S'},
+      {n:'샤워실(여)',r:[10.8,33.0,4.5,3.6],t:{water:1,hw:1},l:'S'},
+      {n:'회의실',r:[15.3,21.6,8.4,15.0],t:{ghp1:2},l:'S'},
+      {n:'관리실',r:[23.7,24.8,4.0,3.4],t:{ghp1:1},l:'S'},
+      {n:'사무실',r:[27.7,21.6,8.8,6.9],t:{ghp1:1},l:'S'},
+      {n:'피로티',r:[36.5,21.6,4.0,6.9],soft:1}
+    ],
+    risers:{water:[12.0,14.3],hw:[12.6,14.3],elec:[22.4,16.2],pv:[23.0,16.2],gas:[-1.8,16.6],ghp1:[-0.2,29.8],ghp2:[-0.45,27.6]},
+    psLabel:[9.4,14.6],
+    equip:[
+      {k:'ghp',sys:['ghp','gas'],r:[-5.4,26.6,2.3,2.2],t:'OAC-1'},
+      {k:'ghp',sys:['ghp','gas'],r:[-2.9,26.6,2.2,2.2],t:'OAC-2'},
+      {k:'hw',sys:['hw','water'],r:[8.4,33.5,2.2,1.5],t:'EH-2'}
+    ],
+    edges:[
+      {s:['ghp'],c:'ref',p:[[-4.25,28.8],[-4.25,29.8],[-0.25,29.8]],n:1},
+      {s:['ghp'],c:'ref',p:[[-0.7,27.6],[-0.45,27.6]],n:1,alt:1},
+      {s:['gas','ghp'],c:'gas',p:[[-1.8,16.95],[-1.8,26.5]]},
+      {s:['gas','ghp'],c:'gas',p:[[-1.8,25.6],[-4.25,25.6],[-4.25,26.5]]},
+      {s:['hw'],c:'hot',p:[[10.6,34.25],[11.5,34.25]]}
+    ],
+    notes:[[-5.4,31.6,'GHP 실외기','ghp']]
+  },
+  B1:{title:'B1 (지하 — 연료전지실·기계실·EPS)', out:null,
+    poly:[[0,0],[40.5,0],[40.5,15.4],[24.0,15.4],[24.0,18.7],[21.7,18.7],[21.7,25.9],[0,25.9]],
+    rooms:[
+      {n:'주차장 (34대)',r:[0,0,40.5,15.4],soft:1},
+      {n:'방풍실-3',r:[15.2,12.9,3.9,2.5]},
+      {n:'연료전지실',r:[0,15.5,4.9,7.6]},
+      {n:'기계실',r:[4.9,15.5,3.4,7.6],lb:1},
+      {n:'계단실',r:[8.3,15.5,6.7,3.2],core:1},
+      {n:'EV홀',r:[15.0,15.5,4.1,3.2],core:1},
+      {n:'EV',r:[19.1,15.5,2.6,3.2],core:1},
+      {n:'EPS',r:[21.7,15.5,2.3,3.2],core:1,lo:1},
+      {n:'우수 저수조',r:[0,23.1,8.3,2.8],hl:'rain'},
+      {n:'빗물저류조 (용도 확인 필요)',r:[8.3,18.7,13.4,7.2],lb:1}
+    ],
+    risers:{water:[13.0,16.2],hw:[13.7,16.2],elec:[22.8,16.1],pv:[23.5,16.1],gas:[-1.8,16.6]},
+    psLabel:[11.3,16.5],
+    equip:[
+      {k:'hw',sys:['hw','fc','water'],r:[0.4,17.0,4.2,1.9],t:'저탕조'},
+      {k:'fc',sys:['fc','gas','elec','hw'],r:[0.4,19.8,4.2,2.4],t:'연료전지 6kW'},
+      {k:'rain',sys:['rain'],r:[5.2,19.8,2.9,1.6],t:'여과'},
+      {k:'rain',sys:['rain'],c:[6.6,18.6],t:'P'},
+      {k:'elec',sys:['elec','ehp','fc','hw','rain'],r:[21.8,17.0,2.1,1.6],t:'LN-M'},
+      {k:'gas',sys:['gas','ghp','fc','hw'],r:[-3.2,18.0,2.6,2.4],t:'계량기'},
+      {k:'water',sys:['water','hw'],r:[19.4,12.2,2.0,1.4],t:'WM'},
+      {k:'rain',sys:['rain'],r:[10.8,13.6,2.2,1.4],t:'청소'},
+      {k:'rain',sys:['rain'],r:[-3.2,11.6,2.6,2.0],t:'조경'},
+      {k:'elec',sys:['elec','ehp','hw','rain'],r:[41.0,16.8,2.4,2.0],t:'맨홀'}
+    ],
+    edges:[
+      {s:['elec','ehp','hw','rain'],c:'elec',p:[[41.0,17.8],[23.95,17.8]]},
+      {s:['elec','ehp','hw'],c:'elec',p:[[22.8,17.0],[22.8,16.5]]},
+      {s:['elec'],c:'elec',p:[[23.5,16.5],[23.5,16.95]]},
+      {s:['fc','elec'],c:'elec',p:[[4.6,21.9],[23.0,21.9],[23.0,18.65]]},
+      {s:['rain'],c:'elec',p:[[22.4,18.65],[22.4,19.3],[7.8,19.3],[7.8,18.6],[7.15,18.6]]},
+      {s:['gas','fc','hw'],c:'gas',p:[[-0.6,19.2],[-0.2,19.2],[-0.2,21.0],[0.35,21.0]]},
+      {s:['gas','ghp'],c:'gas',p:[[-1.8,18.0],[-1.8,16.95]]},
+      {s:['water','hw'],c:'water',p:[[20.4,-1.9],[20.4,12.15]]},
+      {s:['water','hw'],c:'water',p:[[19.4,12.9],[3.9,12.9],[3.9,16.95]]},
+      {s:['water'],c:'water',p:[[13.0,12.9],[13.0,15.8]]},
+      {s:['fc','hw'],c:'hot',p:[[2.5,19.8],[2.5,18.95]]},
+      {s:['hw'],c:'hot',p:[[4.6,17.5],[13.7,17.5],[13.7,16.6]]},
+      {s:['rain'],c:'rain',p:[[-3.3,24.5],[-0.05,24.5]]},
+      {s:['rain'],c:'rain',p:[[7.6,23.1],[7.6,21.45]]},
+      {s:['rain'],c:'rain',p:[[6.6,19.8],[6.6,19.35]]},
+      {s:['rain'],c:'rain',p:[[6.6,17.85],[6.6,14.6]],n:1},
+      {s:['rain'],c:'rain',p:[[6.6,14.6],[-1.9,14.6],[-1.9,13.65]]},
+      {s:['rain'],c:'rain',p:[[6.6,14.6],[10.75,14.6]]}
+    ],
+    notes:[[41.0,16.4,'한전 인입','elec'],[20.9,-1.1,'상수 인입 (토목 급수관)','water'],[-3.4,22.0,'가스 인입','gas'],[-3.4,23.8,'우수 유입','rain'],[-3.4,26.0,'(가정)','rain']]
+  }
+};
+var PLAN_ORDER=['RF','2F','1F','B1'];
+/* ===================== 설정 끝 ===================== */
+
+  var defs='';
+  Object.keys(COL).forEach(function(k){defs+='<marker id="m-'+k+'" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 1L10 5L0 9z" fill="'+COL[k]+'"/></marker>'});
+  document.getElementById('defs').innerHTML=defs;
+  var pdefs=document.createElementNS('http://www.w3.org/2000/svg','defs');pdefs.innerHTML=defs.replace(/id="m-/g,'id="pm-');document.getElementById('pg').insertBefore(pdefs,document.getElementById('proot'));
+
+  var sel={}, PF='1F', AV=[];
+  function any(arr,S){return arr.some(function(s){return S[s]})}
+  function tw(t,fs){var w=0;for(var i=0;i<t.length;i++){var c=t.charCodeAt(i);w+=c>0x2e80?fs:(c===0xb7?fs*.35:fs*.58)}return w}
+
+  /* ===================== 단면 계통도 ===================== */
+  function build(){
+    var S=sel, ov=!Object.keys(S).some(function(k){return S[k]});
+    var bg='',ed='',nd='';
+    function E(c,d,noA,alt){ed+='<path class="edge'+(alt?' alt':'')+'" stroke="'+COL[c]+'" d="'+d+'"'+(noA?'':' marker-end="url(#m-'+c+')"')+'/>'}
+    var vis={};NODES.forEach(function(n){vis[n.id]=ov||any(n.sys,S)});
+    var act={};SHAFT_ORDER.forEach(function(s){act[s]=!ov&&any(SHAFT[s][2],S)});
+    var shafts=SHAFT_ORDER.filter(function(s){return act[s]});
+    var X={};shafts.forEach(function(s,i){X[s]=762+i*14});
+
+    FLOORS.forEach(function(f){
+      f.T=ov?[]:TERM_ORDER.filter(function(t){return f.terms[t]&&S[SK(t)]});
+      f.vis=ov||f.T.length>0||(f.host||[]).some(function(h){return vis[h]});
+    });
+    var hasRF=NODES.some(function(n){return n.lv==='RF'&&vis[n.id]});
+    AV=[];if(hasRF)AV.push('RF');FLOORS.forEach(function(f){if(f.vis)AV.push(f.k)});AV.push('B1');
+    if(AV.indexOf(PF)<0){var fl=FLOORS.filter(function(f){return f.vis&&f.T.length});PF=fl.length?fl[0].k:(hasRF?'RF':'B1')}
+
+    /* 세로 배치 */
+    var y=100, r=null, top=null, alt=0, pend=[];
+    if(hasRF){r=y;top=y;bg+='<rect class="band'+(PF==='RF'?' cur':'')+'" data-f="RF" x="170" y="'+y+'" width="710" height="142"/><text class="fl" x="182" y="'+(y+20)+'">RF 옥상</text>';y+=142}
+    function spans(fk){return shafts.some(function(s){return SHAFT[s][4].indexOf(fk)>=0})}
+    function flush(){
+      if(pend.length){
+        var lab=pend.join(' · ');
+        bg+='<rect class="band skip" x="170" y="'+y+'" width="710" height="30"/><text class="skl" x="182" y="'+(y+19)+'">'+lab+' — 해당 없음'+(pend.some(spans)?' (입상관 통과)':'')+'</text>';y+=30;
+      }pend=[];
+    }
+    FLOORS.forEach(function(f){
+      if(top===null)top=y;
+      if(!f.vis){pend.push(f.k);return}
+      flush();
+      f.top=y; f.h=Math.max(92,32+f.T.length*24);
+      bg+='<rect class="band'+(alt++%2?' alt':'')+(PF===f.k?' cur':'')+'" data-f="'+f.k+'" x="170" y="'+y+'" width="710" height="'+f.h+'"/><text class="fl" x="182" y="'+(y+25)+'">'+f.k+'</text>';
+      var zs=f.zones.filter(function(z){return ov||z[1].split(' ').some(function(t){return f.T.indexOf(t)>=0})});
+      var rows=[[]],cx=232,rw=0;
+      zs.forEach(function(z){var w=Math.round(tw(z[0],11.5)+18);if(cx+w>575&&rows[rows.length-1].length){rows.push([]);cx=232}rows[rows.length-1].push([z,cx,w]);cx+=w+6});
+      var rh=(f.h-38-(rows.length-1)*6)/rows.length;
+      rows.forEach(function(row,ri){row.forEach(function(it){
+        var z=it[0],tg=z[1].split(' ').filter(function(t){return f.T.indexOf(t)>=0}),on=!ov&&tg.length,sc=on?COL[TERM_COL[tg[0]]]:'';
+        var ry=y+28+ri*(rh+6);
+        bg+='<rect class="room'+(on?' on':'')+'" x="'+it[1]+'" y="'+ry+'" width="'+it[2]+'" height="'+rh+'" rx="4"'+(on?' style="stroke:'+sc+'"':'')+'/><text class="rt'+(on?' on':'')+'" x="'+(it[1]+it[2]/2)+'" y="'+(ry+rh/2+4)+'">'+z[0]+'</text>';
+      })});
+      f.ty={};
+      f.T.forEach(function(t,i){
+        var cy=y+22+i*24;f.ty[t]=cy;
+        nd+='<g class="tm"><rect x="600" y="'+(cy-10)+'" width="150" height="20" rx="5" stroke="'+COL[TERM_COL[t]]+'"/><text x="675" y="'+(cy+4)+'">'+f.terms[t][0]+'</text></g>';
+      });
+      y+=f.h;
+    });
+    flush(); if(top===null)top=y;
+    var b=y;
+    bg+='<rect class="band base'+(PF==='B1'?' cur':'')+'" data-f="B1" x="170" y="'+b+'" width="710" height="300"/><text class="fl" x="870" y="'+(b+292)+'" text-anchor="end">B1 지하 (연료전지실 · 기계실 · EPS)</text>';
+    bg+='<rect class="outline" x="170" y="'+top+'" width="710" height="'+(b+300-top)+'"/>';
+    var H=b+320;
+    shafts.forEach(function(s){bg+='<text class="rl" fill="'+COL[SHAFT[s][1]]+'" transform="translate('+(X[s]+4)+' '+(top-6)+') rotate(-90)">'+SHAFT[s][0]+'</text>'});
+
+    /* 노드 */
+    var LV={RF:r,B1:b};FLOORS.forEach(function(f){LV[f.k]=f.top});
+    var P={};
+    NODES.forEach(function(n){
+      if(!vis[n.id]||LV[n.lv]==null)return;
+      var ny=LV[n.lv]+n.y;P[n.id]={x:n.x,y:ny,w:n.w,h:n.h};
+      nd+='<g class="node '+(n.cls||'')+'" data-k="'+n.k+'"><rect class="b" x="'+n.x+'" y="'+ny+'" width="'+n.w+'" height="'+n.h+'" rx="8"/><text class="t" x="'+(n.x+n.w/2)+'" y="'+(ny+(n.s?n.h/2-2:n.h/2+5))+'">'+n.t+'</text>'+(n.s?'<text class="s" x="'+(n.x+n.w/2)+'" y="'+(ny+n.h/2+13)+'">'+n.s+'</text>':'')+'</g>';
+    });
+    if(ov||any(PUMP.sys,S))nd+='<g class="node" data-k="rain"><circle class="b" cx="'+PUMP.x+'" cy="'+(b+PUMP.y)+'" r="'+PUMP.r+'"/><text class="t" x="'+PUMP.x+'" y="'+(b+PUMP.y+4)+'" style="font-size:11px">P</text></g><text class="s" style="font-size:10.5px;fill:#64748b" x="'+(PUMP.x+20)+'" y="'+(b+PUMP.y-14)+'">공급펌프 ×2</text>';
+
+    /* 흐름 */
+    if(!ov){
+      var tagY={};SHAFT_ORDER.forEach(function(s){tagY[s]=[]});
+      FLOORS.forEach(function(f){if(!f.vis)return;f.T.forEach(function(t){var src=f.terms[t][1];if(tagY[src])tagY[src].push(f.ty[t])})});
+      var rfY={drain:r+5,ref_e1:r+12,ref_e2:r+18,ref_g:r+95,gas:r+122,elec:r+129,pv:r+135};
+      var rfOn={ref_e1:S.ehp,ref_e2:S.ehp,ref_g:S.ghp,gas:S.gas||S.ghp,elec:S.elec||S.ehp,pv:S.elec,drain:S.rain};
+      var bY={gas:b+14,elec:b+26,pv:b+32,water:b+104,hw:b+164,drain:b+172};
+      shafts.forEach(function(s){
+        var x=X[s],c=SHAFT[s][1],ys=tagY[s].slice(),al=SHAFT[s][5];
+        var tp=(hasRF&&rfOn[s]&&rfY[s]!=null)?rfY[s]:(ys.length?Math.min.apply(null,ys):null);
+        if(SHAFT[s][3]==='up'){
+          if(tp!=null)E(c,'M'+x+' '+bY[s]+' L'+x+' '+tp,tp===rfY[s]);
+        } else {
+          var bt=bY[s]!=null?bY[s]:Math.max.apply(null,ys);
+          if(tp!=null)E(c,'M'+x+' '+tp+' L'+x+' '+bt,bY[s]!=null,al);
+        }
+        tagY[s].forEach(function(ty){E(c,'M'+x+' '+ty+' L752 '+ty,0,al)});
+      });
+      /* RF */
+      if(hasRF){
+        if(S.rain)E('rain','M250 '+(r+44)+' L250 '+(r+5)+' L'+X.drain+' '+(r+5),1);
+        if(S.ehp){E('ref','M530 '+(r+24)+' L530 '+(r+12)+' L'+X.ref_e1+' '+(r+12),1);E('ref','M660 '+(r+24)+' L660 '+(r+18)+' L'+X.ref_e2+' '+(r+18),1,1)}
+        if(S.ghp)E('ref','M720 '+(r+95)+' L'+X.ref_g+' '+(r+95),1);
+        if(rfOn.gas)E('gas','M'+X.gas+' '+(r+122)+' L660 '+(r+122)+' L660 '+(r+116));
+        if(rfOn.elec){E('elec','M'+X.elec+' '+(r+129)+' L530 '+(r+129)+' L530 '+(r+116));E('elec','M530 '+(r+76)+' L530 '+(r+64));E('elec','M565 '+(r+76)+' L565 '+(r+70)+' L660 '+(r+70)+' L660 '+(r+64))}
+        if(S.elec){E('elec','M590 '+(r+95)+' L598 '+(r+95));E('elec','M390 '+(r+90)+' L390 '+(r+135)+' L'+X.pv+' '+(r+135),1)}
+      }
+      /* 1F 외부 GHP 실외기 */
+      var f1=FLOORS.filter(function(f){return f.k==='1F'})[0];
+      if(P.oac1&&f1.ty&&f1.ty.ghp1!=null)E('ref','M48 '+P.oac1.y+' L48 '+(f1.top+5)+' L589 '+(f1.top+5)+' L589 '+f1.ty.ghp1+' L598 '+f1.ty.ghp1);
+      if(P.oac2&&f1.ty&&f1.ty.ghp2!=null)E('ref','M122 '+P.oac2.y+' L122 '+(f1.top+11)+' L581 '+(f1.top+11)+' L581 '+f1.ty.ghp2+' L598 '+f1.ty.ghp2,0,1);
+      if(P.gsrc&&(S.gas||S.ghp)){if(P.oac1)E('gas','M48 '+(b+60)+' L48 '+(P.oac1.y+P.oac1.h+2));if(P.oac2)E('gas','M122 '+(b+60)+' L122 '+(P.oac2.y+P.oac2.h+2))}
+      /* B1 */
+      if(P.gsrc&&P.fc&&(S.gas||S.fc||S.hw))E('gas','M155 '+(b+80)+' L188 '+(b+80));
+      if(act.gas)E('gas','M145 '+(b+60)+' L145 '+(b+14)+' L'+X.gas+' '+(b+14),1);
+      if(P.kepco&&P.lnm)E('elec','M893 '+(b+65)+' L532 '+(b+65));
+      if(P.fc&&P.lnm&&(S.fc||S.elec))E('elec','M340 '+(b+60)+' L378 '+(b+60));
+      if(P.fc&&P.tank&&(S.fc||S.hw))E('hot','M265 '+(b+90)+' L265 '+(b+128));
+      if(P.wsrc&&P.tank)E('water','M893 '+(b+145)+' L342 '+(b+145));
+      if(act.water)E('water','M960 '+(b+118)+' L960 '+(b+104)+' L'+X.water+' '+(b+104),1);
+      if(act.hw)E('hot','M340 '+(b+164)+' L'+X.hw+' '+(b+164),1);
+      if(act.elec)E('elec','M455 '+(b+40)+' L455 '+(b+26)+' L'+X.elec+' '+(b+26),1);
+      if(S.elec)E('elec','M455 '+(b+90)+' L455 '+(b+102));
+      if(act.pv)E('elec','M'+X.pv+' '+(b+32)+' L505 '+(b+32)+' L505 '+(b+38));
+      if(S.rain){
+        E('rain','M'+X.drain+' '+(b+172)+' L440 '+(b+172)+' L440 '+(b+184));
+        E('rain','M500 '+(b+209)+' L514 '+(b+209));E('rain','M612 '+(b+209)+' L634 '+(b+209));
+        E('rain','M664 '+(b+209)+' L891 '+(b+209));E('rain','M650 '+(b+223)+' L650 '+(b+246));
+        E('elec','M530 '+(b+82)+' L650 '+(b+82)+' L650 '+(b+193));
+      }
+    }
+
+    var svg=document.getElementById('g');
+    svg.setAttribute('viewBox','0 0 1040 '+H); svg.setAttribute('height',H);
+    var root=document.getElementById('root');
+    root.innerHTML=bg+ed+nd;
+    root.style.animation='none'; void root.getBBox(); root.style.animation='';
+
+    PLAN(S,ov,act);
+
+    /* 패널 */
+    var keys=Object.keys(S).filter(function(k){return S[k]});
+    var p=document.getElementById('panel');
+    if(ov){p.innerHTML='';p.style.display='none';}
+    else{
+      p.style.display='';
+      var sp=[];
+      if(hasRF)sp.push('RF 옥상 ('+NODES.filter(function(n){return n.lv==='RF'&&vis[n.id]}).map(function(n){return n.t}).filter(function(v,i,a){return a.indexOf(v)===i}).join(' · ')+')');
+      FLOORS.forEach(function(f){if(!f.vis)return;var zs=f.zones.filter(function(z){return z[1].split(' ').some(function(t){return f.T.indexOf(t)>=0})}).map(function(z){return z[0]});if((vis.oac1||vis.oac2)&&f.k==='1F')zs.push('외부 GHP 실외기 OAC-1·2');sp.push(f.k+' ('+zs.join(' · ')+')')});
+      var b1=NODES.filter(function(n){return n.lv==='B1'&&vis[n.id]}).map(function(n){return n.t});
+      sp.push('B1 ('+b1.join(' · ')+')');
+      p.innerHTML=keys.map(function(k){return '<div><b>'+DESC[k][0]+'</b>'+DESC[k][1]+(DESC[k][2]?' <span class="as">※ '+DESC[k][2]+'</span>':'')+'</div>'}).join('')+'<div class="sp"><b>관련 공간</b>'+sp.join('  /  ')+'</div>';
+    }
+    [].forEach.call(document.querySelectorAll('.chip[data-k]'),function(c){c.classList.toggle('on',!!S[c.getAttribute('data-k')])});
+  }
+
+  /* ===================== 평면 계통도 ===================== */
+  function PX(m){return 60+(m+5.5)*18.78}
+  function PY(m){return 40+(m+2.2)*12.75}
+  var LANE_OFF={ehp1:-13,ehp2:-8.5,ghp:-4,ghp1:-11,ghp2:-6,hw:0,water:4.5,elec:9};
+  function PLAN(S,ov,act){
+    var D=PLANS[PF], bg='', ed='', nd='', lab='';
+    function E(c,pts,noA,alt){ed+='<path class="pedge'+(alt?' alt':'')+'" stroke="'+COL[c]+'" d="'+pts.map(function(p,i){return(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)}).join(' ')+'"'+(noA?'':' marker-end="url(#pm-'+c+')"')+'/>'}
+    function TX(x,y,t,cls,anc,fill){nd+='<text class="'+(cls||'pnote')+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'"'+(anc?' text-anchor="'+anc+'"':'')+(fill?' style="fill:'+fill+'"':'')+'>'+t+'</text>'}
+    function CIR(x,y,r,col){nd+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r+'" fill="#fff" stroke="'+col+'" stroke-width="2.4"/>'}
+
+    /* 외곽 */
+    if(D.out)bg+='<rect class="poutline" x="'+PX(D.out[0])+'" y="'+PY(D.out[1])+'" width="'+(D.out[2]*18.78)+'" height="'+(D.out[3]*12.75)+'"/>';
+    if(D.poly)bg+='<polygon class="poutline" points="'+D.poly.map(function(p){return PX(p[0])+','+PY(p[1])}).join(' ')+'"/>';
+
+    /* 활성 단말 */
+    var on={};TERM_ORDER.forEach(function(t){on[t]=!ov&&S[SK(t)]});
+    var rooms=D.rooms;
+    rooms.forEach(function(rm){
+      var x,y,w,h;
+      if(rm.poly){var xs=rm.poly.map(function(p){return p[0]}),ys=rm.poly.map(function(p){return p[1]});x=Math.min.apply(null,xs);y=Math.min.apply(null,ys);w=Math.max.apply(null,xs)-x;h=Math.max.apply(null,ys)-y}
+      else{x=rm.r[0];y=rm.r[1];w=rm.r[2];h=rm.r[3]}
+      rm.bx=[x,y,w,h];
+      var t=rm.t||{}, used=[];
+      Object.keys(t).forEach(function(k){var kk=k==='hwl'?'hw':k;if(on[kk])used.push(kk)});
+      if(on.elec&&!rm.core&&!rm.soft&&rm.e!==0&&rm.l)used.push('elec');
+      rm.used=used;
+      var stroke=used.length?COL[TERM_COL[used[0]]]:(rm.hl&&!ov&&S[rm.hl]?COL[rm.hl]:null);
+      var cls='proom'+(rm.core?' core':'')+(rm.soft?' soft':'');
+      var st=stroke?' style="stroke:'+stroke+';stroke-width:2.4"':'';
+      if(rm.poly)bg+='<polygon class="'+cls+'" points="'+rm.poly.map(function(p){return PX(p[0])+','+PY(p[1])}).join(' ')+'"'+st+'/>';
+      else bg+='<rect class="'+cls+'" x="'+PX(x)+'" y="'+PY(y)+'" width="'+(w*18.78)+'" height="'+(h*12.75)+'"'+st+'/>';
+      var pl=typeof rm.l==='object'?(rm.l.ghp||rm.l.ehp||rm.l.water||'N'):rm.l, bot=rm.lb;
+      if(!bot&&D.lanes&&pl&&D.lanes[pl]!=null&&D.lanes[pl]<y)bot=1;
+      rm.bot=bot;var lx=PX(x)+5, ly=rm.lo?PY(y)-4:(bot?PY(y+h)-6:PY(y)+14);
+      rm.labR=lx+tw(rm.n,11);rm.labY=ly;
+      lab+='<text class="prt'+(stroke?' on':'')+'" x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'">'+rm.n+'</text>';
+    });
+
+    /* 장비 */
+    (D.equip||[]).forEach(function(q){
+      var v=ov||any(q.sys,S); if(!v)return;
+      var col=COL[{ehp:'ref',ghp:'ref',fc:'gas',hw:'hot',rain:'rain',elec:'elec',gas:'gas',water:'water'}[q.k]];
+      if(q.c){var cx=PX(q.c[0]),cy=PY(q.c[1]);nd+='<g class="node pq" data-k="'+q.k+'"><circle cx="'+cx+'" cy="'+cy+'" r="9" fill="#fff" stroke="'+col+'"/><text x="'+cx+'" y="'+(cy+4)+'">'+q.t+'</text></g>';return}
+      var X0=PX(q.r[0]),Y0=PY(q.r[1]),W=q.r[2]*18.78,Hh=q.r[3]*12.75;
+      nd+='<g class="node pq" data-k="'+q.k+'"><rect x="'+X0+'" y="'+Y0+'" width="'+W+'" height="'+Hh+'" rx="3" fill="#fff" stroke="'+col+'"'+(q.asm?' stroke-dasharray="5 3"':'')+'/><text x="'+(X0+W/2)+'" y="'+(Y0+Hh/2+4)+'">'+q.t+'</text></g>';
+    });
+    /* 루프드레인 */
+    (D.drains||[]).forEach(function(d){
+      if(!(ov||S.rain))return;
+      var x=PX(d[0]),y=PY(d[1]);
+      nd+='<g class="node" data-k="rain"><circle cx="'+x+'" cy="'+y+'" r="7" fill="#fff" stroke="'+COL.rain+'" stroke-width="2.2"/><circle cx="'+x+'" cy="'+y+'" r="2.4" fill="'+COL.rain+'"/></g>';
+      if(!ov&&S.rain){
+        var ex=d[2]==='N'?[x,PY(-0.9)]:[PX(41.2),y];
+        E('rain',d[2]==='N'?[[x,y-8],[x,ex[1]+6]]:[[x+8,y],[ex[0]-6,y]]);
+        CIR(ex[0],ex[1],5,COL.rain);
+      }
+    });
+    if(PF==='RF'&&(ov||S.rain))TX(PX(36.0),PY(23.9)+18,'RD','pnote','middle');
+
+    /* 입상관 */
+    var R=D.risers||{}, RP={};
+    Object.keys(R).forEach(function(k){RP[k]=[PX(R[k][0]),PY(R[k][1])]});
+    var shown=[];
+    if(!ov){
+      SHAFT_ORDER.forEach(function(s){if(act[s]&&SHAFT[s][4].indexOf(PF)>=0&&RP[s]){shown.push(s)}});
+    }
+
+    /* 단말 + 통로 분기 */
+    if(!ov){
+      var srcOf={ehp1:'ref_e1',ehp2:'ref_e2',ghp:'ref_g',ghp1:'ghp1',ghp2:'ghp2',hw:'hw',water:'water',elec:'elec'};
+      TERM_ORDER.forEach(function(sys){
+        if(!on[sys])return;
+        var rk=srcOf[sys], rp=RP[rk]; if(!rp)return;
+        var c=TERM_COL[sys], groups={}, al=UNIT[sys]&&UNIT[sys].alt===1;
+        rooms.forEach(function(rm){
+          if(rm.used.indexOf(sys)<0)return;
+          if(sys==='hw'&&rm.t&&rm.t.hwl)return; /* 개별 전기온수기: 입상 연결 없음 */
+          var ln=typeof rm.l==='object'?(rm.l[SK(sys)]||'N'):rm.l;
+          var b=rm.bx, a=(rm.anc&&!Array.isArray(rm.anc)&&rm.anc[sys]&&!isHV(sys))?rm.anc[sys]:null, ax,ay;
+          if(a){ax=PX(a[0]);ay=PY(a[1])}
+          else if(isHV(sys)){var aa=Array.isArray(rm.anc)?rm.anc:((rm.anc&&rm.anc[SK(sys)])||[b[0]+b[2]/2,b[1]+b[3]/2]);ax=PX(aa[0]);ay=PY(aa[1])}
+          else if(sys==='water'){ax=PX(b[0]+b[2]*.74);ay=PY(b[1]+b[3]/2)+(rm.bot?-5:4)}
+          else if(sys==='hw'){ax=PX(b[0]+b[2]*.3);ay=PY(b[1]+b[3]/2)+(rm.bot?-5:4)}
+          else {ax=PX(b[0]+b[2])-12;ay=PY(b[1])+12}
+          if(isHV(sys)&&ax-30<rm.labR+4&&Math.abs(ay-rm.labY)<16)ay=rm.labY+(rm.labY>PY(b[1]+b[3]/2)?-22:18);
+          rm['a_'+sys]=[ax,ay];
+          (groups[ln]=groups[ln]||[]).push(rm);
+        });
+        Object.keys(groups).forEach(function(ln){
+          var g=groups[ln];
+          if(ln==='D'){g.forEach(function(rm){var a=rm['a_'+sys];E(c,[[rp[0],rp[1]],[a[0],rp[1]],[a[0],a[1]+(a[1]>rp[1]?-10:10)]],0,al)});return}
+          var ly=PY(D.lanes[ln])+LANE_OFF[sys], xs=g.map(function(rm){return rm['a_'+sys][0]});
+          var mn=Math.min.apply(null,xs), mx=Math.max.apply(null,xs);
+          E(c,[[rp[0],rp[1]],[rp[0],ly]],true,al);
+          if(mx>rp[0]+2)E(c,[[rp[0],ly],[mx,ly]],true,al);
+          if(mn<rp[0]-2)E(c,[[rp[0],ly],[mn,ly]],true,al);
+          g.forEach(function(rm){var a=rm['a_'+sys];var dn=a[1]>ly;E(c,[[a[0],ly],[a[0],a[1]+(dn?-11:11)]],0,al)});
+        });
+      });
+    }
+    /* 단말 기호 */
+    if(!ov)rooms.forEach(function(rm){
+      rm.used.forEach(function(sys){
+        if(isHV(sys)){
+          var a=rm['a_'+sys]; if(!a)return; var fl=UNIT[sys].fill;
+          var n=rm.t[sys], show=Math.min(n,3), wpx=rm.bx[2]*18.78;
+          if(wpx<70)show=1;
+          var x0=a[0]-(show-1)*11;
+          for(var i=0;i<show;i++){var cx=x0+i*22;nd+='<rect x="'+(cx-8)+'" y="'+(a[1]-8)+'" width="16" height="16" fill="'+fl+'" stroke="'+COL.ref+'" stroke-width="1.8"/><path d="M'+(cx-8)+' '+(a[1]-8)+'l16 16M'+(cx+8)+' '+(a[1]-8)+'l-16 16" stroke="'+COL.ref+'" stroke-width="1.1"/>'}
+          if(n>show)TX(x0+(show-1)*22+12,a[1]+4,'×'+n,'pin');
+        } else if(sys==='water'){
+          var a=rm['a_water'];if(!a||rm.nofix)return;
+          nd+='<rect x="'+(a[0]-6)+'" y="'+(a[1]-9)+'" width="12" height="18" rx="5" fill="#fff" stroke="'+COL.water+'" stroke-width="2"/>';
+        } else if(sys==='hw'){
+          var b=rm.bx, hx=PX(b[0]+b[2]*.3), hy=PY(b[1]+b[3]/2)+(rm.bot?-5:4);
+          if(rm.t.hwl){nd+='<rect x="'+(hx-13)+'" y="'+(hy-8)+'" width="26" height="16" rx="3" fill="#fff" stroke="'+COL.hot+'" stroke-width="2"/><text x="'+hx+'" y="'+(hy+4)+'" text-anchor="middle" style="font-size:9.5px;font-weight:bold;fill:'+COL.hot+'">EH</text>'}
+          else nd+='<circle cx="'+hx+'" cy="'+hy+'" r="6.5" fill="#fff" stroke="'+COL.hot+'" stroke-width="2.2"/>';
+        } else if(sys==='elec'){
+          var a=rm['a_elec'];if(!a)return;nd+='<rect x="'+(a[0]-5)+'" y="'+(a[1]-5)+'" width="10" height="10" fill="'+COL.elec+'"/>';
+        }
+      });
+    });
+
+    /* 장비 간 흐름 */
+    if(!ov)(D.edges||[]).forEach(function(e){if(any(e.s,S))E(e.c,e.p.map(function(p){return[PX(p[0]),PY(p[1])]}),e.n,e.alt)});
+    /* 입상관 원 */
+    shown.forEach(function(s){CIR(RP[s][0],RP[s][1],5,COL[SHAFT[s][1]])});
+    if(!ov&&D.psLabel&&shown.some(function(s){return['water','hw'].indexOf(s)>=0}))TX(PX(D.psLabel[0]),PY(D.psLabel[1]),'PS','pin');
+    /* 메모 */
+    (D.notes||[]).forEach(function(n){if(ov||S[n[3]]||(n[3]==='ghp'&&S.gas)||(n[3]==='elec'&&(S.ehp||S.hw||S.rain))||(n[3]==='water'&&S.hw)||(n[3]==='gas'&&(S.ghp||S.fc||S.hw)))TX(PX(n[0]),PY(n[1]),n[2],'pin')});
+
+    /* 범례 */
+    var lg='',lx=60,LY=598;
+    if(ov)lg='';
+    else{
+      lg+='<text class="pnote" x="60" y="'+LY+'">입상관 ○</text>';lx=118;
+      shown.forEach(function(s){lg+='<circle cx="'+(lx+5)+'" cy="'+(LY-4)+'" r="5" fill="#fff" stroke="'+COL[SHAFT[s][1]]+'" stroke-width="2.4"/><text class="pnote" x="'+(lx+14)+'" y="'+LY+'">'+SHAFT[s][0]+'</text>';lx+=26+tw(SHAFT[s][0],10.5)});
+      if(PF==='1F'||PF==='2F')lg+='<text class="pnote" x="980" y="'+LY+'" text-anchor="end">⊠ 실내기 · ▯ 위생기구 · ○ 급탕전 · EH 개별 전기온수기 · ■ 전기부하</text>';
+      var us=Object.keys(UNIT).filter(function(u){return on[u]&&D.rooms.some(function(rm){return rm.t&&rm.t[u]})});
+      if(us.length){var ux=60,UY=LY-20;lg+='<text class="pnote" x="'+ux+'" y="'+UY+'">실외기별 구분</text>';ux+=72;
+        us.forEach(function(u){var U=UNIT[u];lg+='<rect x="'+ux+'" y="'+(UY-10)+'" width="12" height="12" fill="'+U.fill+'" stroke="'+COL.ref+'" stroke-width="1.6"/><path d="M'+(ux+16)+' '+(UY-4)+' h22" stroke="'+COL.ref+'" stroke-width="2.4" stroke-dasharray="'+(U.alt?'2.5 4':'7 5')+'"/><text class="pnote" x="'+(ux+42)+'" y="'+UY+'">'+U.n+'</text>';ux+=50+tw(U.n,10.5)+18});}
+    }
+    document.getElementById('proot').innerHTML=bg+ed+nd+lab+lg;
+    document.getElementById('ptitle').textContent='평면 계통도 — '+D.title;
+    var tb='';PLAN_ORDER.forEach(function(k){tb+='<button class="ptab'+(k===PF?' on':'')+'" data-f="'+k+'"'+(AV.indexOf(k)<0?' disabled':'')+'>'+k+'</button>'});
+    document.getElementById('ptabs').innerHTML=tb;
+  }
+
+  [].forEach.call(document.querySelectorAll('.chip[data-k]'),function(c){c.addEventListener('click',function(){var k=c.getAttribute('data-k');sel[k]=!sel[k];build()})});
+  document.getElementById('reset').addEventListener('click',function(){sel={};build()});
+  document.getElementById('root').addEventListener('click',function(e){var bd=e.target.closest('.band[data-f]');if(bd){PF=bd.getAttribute('data-f');build();document.getElementById('pg').scrollIntoView({behavior:'smooth',block:'center'});return}var n=e.target.closest('.node[data-k]');if(n){sel={};sel[n.getAttribute('data-k')]=true;build()}});
+  document.getElementById('ptabs').addEventListener('click',function(e){var t=e.target.closest('.ptab');if(t&&!t.disabled){PF=t.getAttribute('data-f');build()}});
+  document.getElementById('proot').addEventListener('click',function(e){var n=e.target.closest('.node[data-k]');if(n){sel={};sel[n.getAttribute('data-k')]=true;build()}});
+  build();
+})();
+</script>
+</body>
+</html>
